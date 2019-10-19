@@ -1,11 +1,12 @@
-from reference import build_cave, shortest_path
-from collections import defaultdict
-from heapq import heappush, heappop
 import itertools
+from collections import defaultdict
+
+from reference import shortest_path
+
 
 def get_all_paths(data):
-    '''get_all_paths returns a list of every permutation of journeys through
-    the cave'''
+    """get_all_paths returns a list of every permutation of journeys through
+    the cave"""
     map_sword = []
     map_without = []
 
@@ -19,33 +20,6 @@ def get_all_paths(data):
     else:
         map_sword = []
         
-    # Create dictionary of weights between each node, with and without sword
-    weights_dict = defaultdict(tuple)
-    weights_dict_sword = defaultdict(tuple)
-    
-    if map_sword:
-        for i in range(len(map_sword) - 1):
-            for j in range(1, len(map_sword)):
-                # Without sword flag off
-                dista = shortest_path(data, map_sword[i], 
-                                             map_sword[j], False)
-                weights_dict[(map_sword[i], map_sword[j])] = dista
-                weights_dict[(map_sword[j], map_sword[i])] = dista
-                             
-                # With sword flag on
-                dista = shortest_path(data, map_sword[i], 
-                                             map_sword[j], True)
-                weights_dict_sword[(map_sword[i], map_sword[j])] = dista
-                weights_dict_sword[(map_sword[j], map_sword[i])] = dista
-                
-    else:
-        for i in range(len(map_without) - 1):
-            for j in range(1, len(map_without)):
-                dista = shortest_path(data, map_without[i], 
-                                             map_without[j], False)
-                weights_dict[(map_without[i], map_without[j])] = dista
-                weights_dict[(map_without[j], map_without[i])] = dista
-    
     # Create all possible permutations of routes through cave
     permutations = list(itertools.permutations(map_without))
     permutations += list(itertools.permutations(map_sword))
@@ -58,7 +32,8 @@ def get_all_paths(data):
         permutations[i].insert(0, data['entrance'])
         permutations[i].append(data['exit'])
         
-    return (permutations, weights_dict_sword, weights_dict)
+    return (permutations)
+
 
 def get_distance(path, data):
     sword = (-1, -1)
@@ -82,8 +57,8 @@ def get_distance(path, data):
 def optimal_path(data):
     
     # A list holding every possible path through the cave
-    paths, weights_dict_sword, weights_dict = get_all_paths(data)
-    
+    paths = get_all_paths(data)
+
     # a list of the distances found testing the paths
     path_distances = []
 
