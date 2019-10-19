@@ -1,15 +1,12 @@
 def valid_index(size, pos):
-    """valid_index takes the size of the cave and checks whether or not the
-    given position is inside the dimensions of the cave"""
-    if -1 < pos[0] < size and -1 < pos[1] < size:
-        return True
-    else:
-        return False
+    """valid_index check if a given index is located inside the cave"""
+    return True if -1 < pos[0] < size and -1 < pos[1] < size else False
 
 
 def build_cave(data):
-    """build_cave builds a two-dimensional representation of a cave from a data
-    dictionary"""
+    """build_cave returns a matrix representation of a cave
+
+    data:  a dictionary of features in the cave"""
 
     # List to check for multiple conflicting coordinates
     coordinates_list = []

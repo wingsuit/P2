@@ -4,7 +4,12 @@ from collections import defaultdict
 
 def shortest_path(data, start, end, has_sword):
     """shortest_path determines the length of the shortest valid path between
-    two locations in a cave."""
+    two locations in a cave
+
+    data:        a dictionary of features in the cave
+    start:       starting coordinates tuple
+    end:         end coordinates tuples
+    has_sword:   boolean value if holding sword or not"""
 
     # List of all unwalkable positions
     forbidden = []

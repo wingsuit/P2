@@ -2,9 +2,12 @@ from reference import build_cave
 
 
 def check_path(data, path):
-    """check_path takes two arguments - data, a dictionary of features in the
-    cave and path, a list of moves constituting a path through the dungeon.
-    It returns True if the path is valid, or False if it is not valid."""
+    """check_path checks if a given path is a valid route through the
+    cave according to the rules of the game and returns a boolean result
+
+    data:  a dictionary of features in the cave
+    path:  a list of moves constituting a path through the dungeon"""
+
     cave = build_cave(data)
 
     # Replace all letters with values in path
