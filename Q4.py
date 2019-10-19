@@ -9,7 +9,7 @@ def search(data, locations):
     data:       a dictionary of features in the cave
     locations:  list holding the locations of the treasure and sword"""
 
-    # A class holding info on the path
+    # An object holding info on the path
     class Node:
         def __init__(self, weight, visited, sword):
             self.visited = visited[:]
