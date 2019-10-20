@@ -1,5 +1,6 @@
 from reference import build_cave, shortest_path
 from heapq import heappush, heappop
+import random
 
 
 def search(data, locations):

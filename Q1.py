@@ -16,7 +16,7 @@ def build_cave(data):
         return None
 
     # Our cave to return
-    cave = [['.'] * data['size'] for i in range(data['size'])]
+    cave = [['.'] * data['size'] for _ in range(data['size'])]
 
     # Check for an entrance
     if 'entrance' not in data or not isinstance(data['entrance'], tuple):
@@ -63,7 +63,7 @@ def build_cave(data):
 
     # Check for 3 or fewer treasures
     if 'treasure' in data:
-        if len(data['treasure']) > 3:
+        if len(data['treasure']) > 3 or not isinstance(data['treasure'], list):
             return None
         else:
             for coord in data['treasure']:
@@ -74,6 +74,8 @@ def build_cave(data):
 
     # Check for walls
     if 'walls' in data:
+        if not isinstance(data['walls'], list):
+            return None
         for coord in data['walls']:
             if not valid_index(data['size'], coord):
                 return None
