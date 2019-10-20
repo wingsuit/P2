@@ -1,5 +1,5 @@
 from reference import build_cave, shortest_path
-from heapq import heappush, heappop
+import random
 
 
 def get_cost(point, unexplored):
@@ -9,16 +9,21 @@ def get_cost(point, unexplored):
             return node[2].weight
 
 
-def replace_cost(node, old_unexplored):
+def replace_cost(node, old):
     """replace_cost replaces the child's current cost with the given"""
-    # Rewrite this to create a list then call heapify on the list
-    unexplored = []
-    heappush(unexplored, (node.weight, id(node), node))
-    for entry in old_unexplored:
-        if entry[2].location != node.location:
-            heappush(unexplored, entry)
+    unexplored = [(node.weight, id(node), node)]
+    unexplored += [entry for entry in old if entry[2].location != node.location]
     return unexplored
 
+
+def cost_locations(data, node, locations):
+    cost_locs = []
+    for loc in locations:
+        if loc not in node.visited + [node.location]:
+            cost = shortest_path(data, node.location, loc, node.sword)
+            if cost:
+                cost_locs.append((cost, loc))
+    return sorted(cost_locs)
 
 def search(data, with_sword):
 
@@ -47,15 +52,18 @@ def search(data, with_sword):
     # Entrance node
     node = Node(data['entrance'], 0, [], 0, False)
 
-    # Priority que
-    unexplored = []
     # Add the first node onto the que
-    heappush(unexplored, (0, id(node), node))
+    unexplored = [(0, id(node), node)]
 
     while unexplored:
 
+        for item in unexplored:
+            print(f"Cost: {item[0]}, at {node.visited + [node.location]}")
+        print("Done")
+
         # Our current position
-        node = heappop(unexplored)[2]
+        unexplored.sort(reverse=True)
+        node = unexplored.pop(-1)[2]
 
         # Check for the sword
         if node.location == sword_location:
@@ -67,26 +75,19 @@ def search(data, with_sword):
                 return node.weight
             # locations += [data['exit']]
 
-        # There is still treasure (or a sword) to collect
-        for next_location in locations:
+        # Find the next location sorted by descending distance
+        for cost, next_location in cost_locations(data, node, locations):
             # Find the next potential move
-            if next_location not in node.visited:
-                if next_location == data['exit'] and node.treasures < len(treasure_locations):
-                    continue
-                # Check if we've been there before
-                cost = shortest_path(data, node.location, next_location, node.sword)
-                # If the new node is reachable
-                if cost:
-                    treasure = 1 if next_location in treasure_locations else 0
-                    new_node = Node(next_location, node.weight + cost, node.visited + [node.location], node.treasures + treasure, node.sword)
-                    # If we haven't been there before, add it to the que
-                    if new_node not in unexplored:
-                        heappush(unexplored, (new_node.weight, id(new_node), new_node))
-                    # If we have seen it before at a higher cost, update it
-                    elif new_node.weight < get_cost(next_location, unexplored):
-                        unexplored = replace_cost(new_node, unexplored)
-
-
+            if next_location == data['exit'] and node.treasures < len(treasure_locations):
+                continue
+            treasure = 1 if next_location in treasure_locations else 0
+            new_node = Node(next_location, node.weight + cost, node.visited + [node.location], node.treasures + treasure, node.sword)
+            # If we haven't been there before, add it to the que
+            if new_node not in unexplored:
+                unexplored.append((new_node.weight, id(new_node), new_node))
+            # If we have seen it before at a higher cost, update it
+            elif new_node.weight < get_cost(next_location, unexplored):
+                unexplored = replace_cost(new_node, unexplored)
     return 1000
 
 
@@ -99,7 +100,7 @@ def optimal_path(data):
     a = search(data, True)
     b = search(data, False)
 
-    if a == 1000 and b == 1000:
+    if a >= 1000 and b >= 1000:
         return None
 
     return a if a < b else b

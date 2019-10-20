@@ -1,4 +1,5 @@
 from reference import build_cave, shortest_path
+from heapq import heappush, heappop
 
 
 def search(data, locations):
@@ -10,28 +11,30 @@ def search(data, locations):
 
     # An object holding info on the path
     class Node:
-        def __init__(self, weight, visited, sword, treasures):
+        def __init__(self, weight, visited, sword):
             self.visited = visited[:]
             self.weight = weight
             self.sword = sword
-            self.treasures = treasures
 
     # Location of the sword
     sword_location = data['sword'] if 'sword' in data else (-1, -1)
-    # Treasure locations
-    treasure_locations = data['treasure'][:] if 'treasure' in data else []
 
     # Entrance node
-    node = Node(0, [data['entrance']], False, 0)
+    node = Node(0, [data['entrance']], False)
 
+    # Priority que
+    unexplored = []
     # Add the first node onto the que
-    unexplored = [(0, id(node), node)]
+    heappush(unexplored, (0, id(node), node))
+
+    # If there is no nothing to collect, go to exit
+    if len(locations) == 0:
+        locations.append(data['exit'])
 
     while unexplored:
 
         # Our current position
-        unexplored.sort(reverse=True)
-        node = unexplored.pop(-1)[2]
+        node = heappop(unexplored)[2]
 
         # Check for the sword
         if node.visited[-1] == sword_location:
@@ -41,18 +44,25 @@ def search(data, locations):
         if node.visited[-1] == data['exit']:
             return node.weight
 
-        for point in locations:
-            if point not in node.visited:
-                if point == data['exit'] and \
-                        node.treasures < len(treasure_locations):
-                    continue
-                cost = shortest_path(data, node.visited[-1], point,
-                                                            node.sword)
-                if cost:
-                    treasure = 1 if point in treasure_locations else 0
-                    new_node = Node(node.weight + cost, node.visited +
-                            [point], node.sword, node.treasures + treasure)
-                    unexplored.append((cost, id(new_node), new_node))
+        # We have collected all treasure, find cost to exit
+        if len(node.visited) == len(locations) + 1:
+            cost = shortest_path(data, node.visited[-1], data['exit'],
+                                                                node.sword)
+            # If there is a path to the exit, add it to the que for comparison
+            if cost:
+                node.weight += cost
+                node.visited += [data['exit']]
+                heappush(unexplored, (cost, id(node), node))
+        else:
+            # There is still treasure to collect
+            for point in locations:
+                if point not in node.visited:
+                    cost = shortest_path(data, node.visited[-1], point,
+                                                                node.sword)
+                    if cost:
+                        new_node = Node(node.weight + cost, node.visited +
+                                                        [point], node.sword)
+                        heappush(unexplored, (cost, id(new_node), new_node))
 
     return data['size'] ** 3
 
@@ -63,9 +73,8 @@ def optimal_path(data):
 
     data: a dictionary of features in the cave"""
 
-    # Get the coordinates of the treasures, sword and exit
-    treasure = [data['exit']]
-    treasure += data['treasure'][:] if 'treasure' in data else []
+    # Get the coordinates of the treasures and sword
+    treasure = data['treasure'][:] if 'treasure' in data else []
     sword = treasure[:] + [data['sword']] if 'sword' in data else []
 
     # Get the shortest distances, with and without the sword

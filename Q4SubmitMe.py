@@ -66,12 +66,13 @@ def optimal_path(data):
     # Get the coordinates of the treasures, sword and exit
     treasure = [data['exit']]
     treasure += data['treasure'][:] if 'treasure' in data else []
-    sword = treasure[:] + [data['sword']] if 'sword' in data else []
+    # sword = treasure[:] + [data['sword']] if 'sword' in data else []
+    treasure += [data['sword']] if 'sword' in data else []
 
     # Get the shortest distances, with and without the sword
     distance = search(data, treasure)
-    dist_sword = search(data, sword) if 'sword' in data else data['size'] ** 3
+    # dist_sword = search(data, sword) if 'sword' in data else data['size'] ** 3
 
     # Return the shorter of the two distances or None if no path was found
-    distance = distance if distance < dist_sword else dist_sword
+    # distance = distance if distance < dist_sword else dist_sword
     return distance if distance < data['size'] ** 3 else None
