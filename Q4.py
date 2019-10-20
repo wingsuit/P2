@@ -34,8 +34,8 @@ def optimal_path(data):
     while unexplored:
 
         # Our current position
-        unexplored.sort(reverse=True)
-        node = unexplored.pop(-1)[2]
+        unexplored.sort()
+        node = unexplored.pop(0)[2]
 
         # Check for the sword
         if node.visited[-1] == sword_location:

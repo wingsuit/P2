@@ -1,5 +1,4 @@
 from reference import build_cave, shortest_path
-import random
 
 
 def get_cost(point, unexplored):
@@ -24,6 +23,7 @@ def cost_locations(data, node, locations):
             if cost:
                 cost_locs.append((cost, loc))
     return sorted(cost_locs)
+
 
 def search(data, with_sword):
 
@@ -56,10 +56,6 @@ def search(data, with_sword):
     unexplored = [(0, id(node), node)]
 
     while unexplored:
-
-        # for item in unexplored:
-            # print(f"Cost: {item[0]}, at {node.visited + [node.location]}")
-        # print("Done")
 
         # Our current position
         unexplored.sort(reverse=True)
