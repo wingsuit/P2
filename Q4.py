@@ -9,24 +9,24 @@ def optimal_path(data):
 
     # An object holding info on the path
     class Node:
-        def __init__(self, weight, visited, sword, treasures):
-            self.visited = visited[:]
+        def __init__(self, weight, visited, treasures, sword):
             self.cost = weight
-            self.sword = sword
+            self.visited = visited[:]
             self.treasures = treasures
+            self.sword = sword
 
     # Location of the sword
     sword_location = data['sword'] if 'sword' in data else (-1, -1)
 
     # Treasure locations
-    treasure_locations = data['treasure'][:] if 'treasure' in data else []
+    treasure_locations = data['treasure'] if 'treasure' in data else []
 
     # All locations
-    locations = [data['sword']] if 'sword' in data else []
-    locations += [data['exit']] + treasure_locations
+    locations = [data['exit']] + treasure_locations
+    locations += [data['sword']] if 'sword' in data else []
 
     # Entrance node
-    node = Node(0, [data['entrance']], False, 0)
+    node = Node(0, [data['entrance']], 0, False)
 
     # Add the first node onto the que
     unexplored = [(0, id(node), node)]
@@ -45,7 +45,7 @@ def optimal_path(data):
         if node.visited[-1] == data['exit']:
             return node.cost
 
-        # Find every spot we can go from here
+        # Find every location we can go from here
         for spot in locations:
             if spot not in node.visited:
 
@@ -54,12 +54,12 @@ def optimal_path(data):
                         node.treasures < len(treasure_locations):
                     continue
 
-                # If the new spot is reachable, add it to the que
+                # If the location is reachable, add it to the que
                 cost = shortest_path(data, node.visited[-1], spot, node.sword)
                 if cost:
                     treasure = 1 if spot in treasure_locations else 0
                     new_node = Node(node.cost + cost, node.visited +
-                                [spot], node.sword, node.treasures + treasure)
+                                [spot], node.treasures + treasure, node.sword)
                     unexplored.append((new_node.cost, id(new_node), new_node))
 
     return None
