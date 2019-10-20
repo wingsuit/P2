@@ -57,9 +57,9 @@ def search(data, with_sword):
 
     while unexplored:
 
-        for item in unexplored:
-            print(f"Cost: {item[0]}, at {node.visited + [node.location]}")
-        print("Done")
+        # for item in unexplored:
+            # print(f"Cost: {item[0]}, at {node.visited + [node.location]}")
+        # print("Done")
 
         # Our current position
         unexplored.sort(reverse=True)
@@ -84,6 +84,7 @@ def search(data, with_sword):
             new_node = Node(next_location, node.weight + cost, node.visited + [node.location], node.treasures + treasure, node.sword)
             # If we haven't been there before, add it to the que
             if new_node not in unexplored:
+                # unexplored.append((new_node.weight, id(new_node), new_node))
                 unexplored.append((new_node.weight, id(new_node), new_node))
             # If we have seen it before at a higher cost, update it
             elif new_node.weight < get_cost(next_location, unexplored):
