@@ -16,12 +16,10 @@ def search(data, locations):
             self.weight = weight
             self.sword = sword
 
-    # Location of sword for comparison
-    sword_location = (-1, -1)
-    if 'sword' in data:
-        sword_location = data['sword']
+    # Location of the sword
+    sword_location = data['sword'] if 'sword' in data else (-1, -1)
 
-    # Our entrance
+    # Entrance node
     node = Node(0, [data['entrance']], False)
 
     # Priority que
@@ -29,7 +27,7 @@ def search(data, locations):
     # Add the first node onto the que
     heappush(unexplored, (0, id(node), node))
 
-    # There is nothing to collect
+    # If there is no nothing to collect, go to exit
     if len(locations) == 0:
         locations.append(data['exit'])
 
@@ -50,6 +48,7 @@ def search(data, locations):
         if len(node.visited) == len(locations) + 1:
             cost = shortest_path(data, node.visited[-1], data['exit'],
                                                                 node.sword)
+            # If there is a path to the exit, add it onto the que for comparison
             if cost:
                 node.weight += cost
                 node.visited += [data['exit']]
@@ -60,11 +59,10 @@ def search(data, locations):
                 if point not in node.visited:
                     cost = shortest_path(data, node.visited[-1], point,
                                                                 node.sword)
-                    if not cost:
-                        continue
-                    new_node = Node(node.weight + cost,
-                                    node.visited + [point], node.sword)
-                    heappush(unexplored, (cost, id(new_node), new_node))
+                    if cost:
+                        new_node = Node(node.weight + cost, node.visited +
+                                                        [point], node.sword)
+                        heappush(unexplored, (cost, id(new_node), new_node))
 
     return data['size'] ** 3
 
@@ -75,14 +73,14 @@ def optimal_path(data):
 
     data: a dictionary of features in the cave"""
 
-    # See if there are any treasures to collect
-    no_sword = data['treasure'][:] if 'treasure' in data else []
-    sword = no_sword[:] + [data['sword']] if 'sword' in data else []
+    # Get the coordinates of the treasures and sword
+    treasure = data['treasure'][:] if 'treasure' in data else []
+    sword = treasure[:] + [data['sword']] if 'sword' in data else []
 
     # Get the shortest distances, with and without the sword
-    dist = search(data, no_sword)
+    distance = search(data, treasure)
     dist_sword = search(data, sword) if 'sword' in data else data['size'] ** 3
 
-    # Get the shortest of the two, return it or None if no path was found
-    distance = dist if dist < dist_sword else dist_sword
+    # Return the shorter of the two distances or None if no path was found
+    distance = distance if distance < dist_sword else dist_sword
     return distance if distance < data['size'] ** 3 else None

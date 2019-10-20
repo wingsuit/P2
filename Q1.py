@@ -42,7 +42,7 @@ def build_cave(data):
             return None
         elif not valid_index(data['size'], data['dragon']):
             return None
-        # If draon is at the entrance
+        # If dragon is adjacent to the entrance
         elif (data['entrance'][0] - 1 <= data['dragon'][0] <=
               data['entrance'][0] + 1 and data['entrance'][1] - 1 <=
               data['dragon'][1] <= data['entrance'][1] + 1):

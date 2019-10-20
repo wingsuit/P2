@@ -11,7 +11,7 @@ def shortest_path(data, start, end, has_sword):
     end:         end coordinates tuples
     has_sword:   boolean value if holding sword or not"""
 
-    # List of all unwalkable positions
+    # List of all unavailable positions
     forbidden = []
     if 'walls' in data:
         forbidden += data['walls']

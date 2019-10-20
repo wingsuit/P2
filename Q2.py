@@ -6,7 +6,7 @@ def check_path(data, path):
     cave according to the rules of the game and returns a boolean result
 
     data:  a dictionary of features in the cave
-    path:  a list of moves constituting a path through the dungeon"""
+    path:  a list of moves constituting a path through the cave"""
 
     cave = build_cave(data)
 
@@ -15,13 +15,13 @@ def check_path(data, path):
     path = [moves_dic[m] for m in path]
 
     # Our current position
-    x, y = data['entrance']
+    y, x = data['entrance']
 
     # Dragon and adjacent positions
     dragon_pos = []
     if 'dragon' in data:
-        d_x, d_y = data['dragon']
-        dragon_pos = [((d_x + i, d_y + j)) for i in range(-1, 2)
+        d_y, d_x = data['dragon']
+        dragon_pos = [(d_y + i, d_x + j) for i in range(-1, 2)
                       for j in range(-1, 2)]
 
     # Treasure collected
@@ -30,27 +30,26 @@ def check_path(data, path):
     # Our main loop, go through every location and check for validity.
     for move in path:
         # Perform the move
-        x += move[0]
-        y += move[1]
+        y += move[0]
+        x += move[1]
 
         # Check for index validity
-        if not -1 < x < data['size'] or not -1 < y < data['size']:
+        if not -1 < y < data['size'] or not -1 < x < data['size']:
             return False
 
         # Check for wall or dragon
-        if cave[x][y] == '#' or (x, y) in dragon_pos:
+        if cave[y][x] == '#' or (y, x) in dragon_pos:
             return False
 
         # Pickup sword and treasure
-        if cave[x][y] == 't':
+        if cave[y][x] == 't':
             dragon_pos = []
-        elif cave[x][y] == '$':
+        elif cave[y][x] == '$':
             treasure += 1
-            cave[x][y] = '.'
+            cave[y][x] = '.'
 
     # Are we at the exit with all treasure
-    if (x, y) == data['exit']:
-        if 'treasure' in data and treasure != len(data['treasure']):
-            return False
-        return True
-    return False
+    exit_conditions = [(y, x) == data['exit'],
+                       not ('treasure' in data and
+                            treasure != len(data['treasure']))]
+    return False not in exit_conditions
