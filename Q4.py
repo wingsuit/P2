@@ -48,7 +48,7 @@ def search(data, locations):
         if len(node.visited) == len(locations) + 1:
             cost = shortest_path(data, node.visited[-1], data['exit'],
                                                                 node.sword)
-            # If there is a path to the exit, add it onto the que for comparison
+            # If there is a path to the exit, add it to the que for comparison
             if cost:
                 node.weight += cost
                 node.visited += [data['exit']]
