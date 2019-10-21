@@ -22,7 +22,7 @@ def check_path(data, path):
     if 'dragon' in data:
         d_y, d_x = data['dragon']
         dragon_pos = [(d_y + i, d_x + j) for i in range(-1, 2)
-                      for j in range(-1, 2)]
+                                          for j in range(-1, 2)]
 
     # Treasure collected
     treasure = 0
@@ -49,7 +49,6 @@ def check_path(data, path):
             cave[y][x] = '.'
 
     # Are we at the exit with all treasure
-    exit_conditions = [(y, x) == data['exit'],
-                       not ('treasure' in data and
-                            treasure != len(data['treasure']))]
-    return False not in exit_conditions
+    success = [(y, x) == data['exit'],
+               not ('treasure' in data and treasure != len(data['treasure']))]
+    return False not in success

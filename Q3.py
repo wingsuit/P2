@@ -20,7 +20,7 @@ def shortest_path(data, start, end, has_sword):
         forbidden += [(x + i, y + j) for i in range(-1, 2)
                       for j in range(-1, 2)]
 
-    # Current position and tree search state variables
+    # Current position and search state
     position = start
     unexplored = [position]
     explored = set()
@@ -32,7 +32,7 @@ def shortest_path(data, start, end, has_sword):
 
         position = unexplored.pop(0)
 
-        # The end is nigh, traverse the tree and return distance
+        # The end is nigh, traverse up the tree and return distance
         if position == end:
             distance = 0
             current = end

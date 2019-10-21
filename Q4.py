@@ -11,7 +11,7 @@ def optimal_path(data):
     class Node:
         def __init__(self, weight, visited, treasures, sword):
             self.cost = weight
-            self.visited = visited[:]
+            self.visited = visited
             self.treasures = treasures
             self.sword = sword
 
@@ -58,8 +58,8 @@ def optimal_path(data):
                 cost = shortest_path(data, node.visited[-1], spot, node.sword)
                 if cost:
                     treasure = 1 if spot in treasure_locations else 0
-                    new_node = Node(node.cost + cost, node.visited +
-                                [spot], node.treasures + treasure, node.sword)
+                    new_node = Node(node.cost + cost, node.visited + [spot],
+                                    node.treasures + treasure, node.sword)
                     unexplored.append((new_node.cost, id(new_node), new_node))
 
     return None
